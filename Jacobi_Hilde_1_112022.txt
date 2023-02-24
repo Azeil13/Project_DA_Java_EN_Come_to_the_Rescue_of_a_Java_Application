@@ -1,0 +1,259 @@
+/*ci-dessous le lien vers le repository GitHub avec le code java complété  
+*( au départ sur Eclipse- Java Integrated Development Environment (IDE) )
+*     https://github.com/Azeil13/Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application
+*/
+
+  
+
+// ci-dessous le fichier result.out ( au départ sur sur Eclipse- Java Integrated Development Environment (IDE))
+// comprenant les symptômes dans l'ordre alphabétiques et les décomptes
+/*
+*
+*/
+Open the file:C:\Users\hilde\OneDrive\Desktop\OpenClassroom- Project 4\Project\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application-master\Project02Eclipse\symptoms.txt
+100
+anxiety:5
+arrhythmias:3
+blindness:1
+blurred vision:5
+constricted pupils:3
+cough:6
+dialated pupils:4
+dizziness:5
+dry mouth:8
+fever:7
+headache:3
+high blood pressure:10
+inflamation:7
+insomnia:4
+low blood pressure:4
+nausea:5
+rapid heart rate:1
+rash:4
+shortness of breath:3
+stiff neck:4
+stomach pain:3
+tremor:4
+water retention:1
+
+
+
+
+
+
+
+
+// ci-dessous le fichier ISymptomReader.java (au départ sur sur Eclipse- Java Integrated Development Environment //(IDE))
+// comprenant l'interface ISymptomReader
+/*
+*
+*/
+package com.hemebiotech.analytics;
+
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+
+
+/**
+ * 
+ * This is the Interface ISymptomReader 
+ * 
+ * @author hilde Jacobi
+ * @version 1 Build February 23, 2023.
+ *
+ */
+
+public interface ISymptomReader {
+	
+	public List<String> readFile(String filePath);
+
+	public void printFile(Map<String,Integer> sortedSymptoms ,String outputPath) throws IOException;
+}
+
+
+
+
+
+
+
+// ci-dessous le fichier SymptomReader.java  ( au départ sur sur Eclipse- Java Integrated Development Environment //(IDE))
+// comprenant class SymptomReader
+/*
+*
+*/
+package com.hemebiotech.analytics;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.io.FileReader;
+
+/**
+* 
+* This is the class SymptomsReader which implements Interface ISymtomsReader
+* 
+* @author hilde Jacobi
+* @version 1 Build February 23, 2023.
+*
+*/
+
+public class SymptomReader implements ISymptomReader{
+
+
+	//Create a openFile(String filename) Method
+	/**
+	 * open a file and return BufferReader
+	 * @param filename it is the path of the file to open in the buffer
+	 * @return return a BufferReader of all the lines of the file
+	 */
+	public BufferedReader openFile(String filename) {
+		System.out.println("Open the file:"+ filename);
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader (new FileReader(filename));
+			return reader;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	//Create a readFile(BufferedReader reader) Method
+	/**
+	 *
+	 * @param reader create read File Method
+	 * @return list of string File of symptoms
+	 */
+	public List<String> readFile(String filePath) { //method BufferedReader native of Java
+		BufferedReader reader =openFile(filePath);
+
+		List<String> symptoms = new ArrayList<>(); // create a List of string with variable symptoms
+
+		try {
+			while (reader.ready()) {
+				symptoms.add(reader.readLine()); // add in the List what it is reading each sentence
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return symptoms;
+	}
+
+
+	/*
+	 * 
+	 * Write printFile method
+	 * and create the file result.out  which contain the line read line by line of the symtoms.txt
+	 */
+	
+	
+	/**
+	 *
+	 * @param Map<String,Integer> sortedSymptoms : map of the symptoms
+	 * @throws IOException
+	 */
+	public void printFile(Map<String,Integer> sortedSymptoms ,String outputPath) throws IOException { //method printFile no return
+		FileWriter resultsDocument = new FileWriter(outputPath); // create a new File
+		
+		for (String symptomKey: sortedSymptoms.keySet()) //create a new variable loop for line by line symptom
+		{
+			try {
+				System.out.println(symptomKey+":"+sortedSymptoms.get(symptomKey));
+				resultsDocument.write(symptomKey+":"+sortedSymptoms.get(symptomKey)); // put in the file the newline
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		resultsDocument.close();
+
+	}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+// ci-dessous le fichier Main.java  ( au départ sur sur Eclipse- Java Integrated Development Environment //(IDE))
+// comprenant class Main
+/*
+*
+*/
+
+package com.hemebiotech.analytics;
+
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+
+
+
+/**
+* This is the main class Main 
+* 
+* @author hilde Jacobi
+* @version 1 Build February 23, 2023.
+*
+*/
+public class Main {
+	// Inside main, call the methods on the br object
+	/**
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args) { //Java main() method
+		ISymptomReader reader = new SymptomReader(); // Create a br object
+		List<String> symptoms = reader.readFile("C:\\Users\\hilde\\OneDrive\\Desktop\\OpenClassroom- Project 4\\Project\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application-master\\Project02Eclipse\\symptoms.txt"); // Call the readFile(BufferedReader reader) method
+
+		// method openFile of the class is hidden by the use of the interface
+		//read.openFile("XXXX"); -> does not compile and it is done on purpose
+		
+		System.out.println(symptoms.size());
+		Map<String,Integer> sortedSymptoms = new TreeMap<String,Integer>();
+		for(String symptom : symptoms){
+			if(!sortedSymptoms.containsKey(symptom)){
+				// I initialize my counter for the symptom if it is the first time that I see it
+				sortedSymptoms.put(symptom, 0);
+			}
+
+			// I am looking for the number of symptoms that I have already found
+			int nbSymptomFound = sortedSymptoms.get(symptom);
+			// I add 1 to the number of symptoms
+			sortedSymptoms.put(symptom, nbSymptomFound+1);
+
+		}
+		
+		try {
+			reader.printFile(sortedSymptoms, "C:\\Users\\hilde\\OneDrive\\Desktop\\OpenClassroom- Project 4\\Project\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application-master\\Project02Eclipse\\symptomsSorted.txt");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+
